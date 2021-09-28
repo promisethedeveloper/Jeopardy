@@ -1,0 +1,39 @@
+/* some colors you may find useful:
+  #115ff4
+  #060ce9
+  #28a200
+  #8d2ab5
+  #74119c
+*/
+
+/* some colors you may find useful:
+  #115ff4
+  #060ce9
+  #28a200
+  #8d2ab5
+  #74119c
+*/
+
+#jeopardy {
+	text-align: center;
+	font-size: 12px;
+	background-color: green;
+	color: white;
+}
+
+th {
+	width: 12em;
+	padding: 1em;
+	text-transform: uppercase;
+	font-family: "Roboto", sans-serif;
+	height: 6em;
+	border: 2px solid white;
+}
+
+td {
+	height: 6em;
+	width: 12em;
+	padding: 1em;
+	font-family: "Roboto", sans-serif;
+	border: 2px solid white;
+}
