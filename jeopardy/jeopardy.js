@@ -60,7 +60,7 @@ async function getCategory(categoryId) {
 	const res = await axios.get(
 		`https://jservice.io/api/category?id=${categoryId}`
 	);
-	// console.log(res.data);
+	console.log("The data", res);
 
 	// Destructure the data gotten from the API
 	const { title, clues } = res.data;
@@ -104,34 +104,31 @@ async function fillTable() {
 	// Select the head of the table and empty it out
 	$("thead").empty();
 
-	// T E S T I N G
-	const x = await getCategory(11603);
-	console.log(x);
-
 	// Create a table row
 	let $tr = $("<tr></tr>");
 	// Loop through the value of WIDTH, create a header cell and set the text to the category title
+	// i is the category index
 	for (let i = 0; i < 6; i++) {
-		$tr.append($("<th></th>").text(x["title"]));
+		// $tr.append($("<th></th>").text(x["title"]));
+		$tr.append($("<th></th>").text(categories[i].title));
 	}
 	$("thead").append($tr);
 
 	// Select table body
 	$("tbody").empty();
 
+	// y is the clue index
 	for (let y = 0; y < 5; y++) {
-		// Create a table row
+		// Create a table row i.e row of clues
 		let $tr = $("<tr></tr>");
-		// determine how many td i.e divisions
+		// determine how many td i.e divisions, x is a category index
 		for (let x = 0; x < 6; x++) {
+			// Set the id to the clue index - category Index
 			$tr.append($("<td></td>").attr("id", `${y}-${x}`).text("?"));
 		}
 		$("tbody").append($tr);
 	}
 }
-
-// T E S T I N G
-fillTable();
 
 /** Handle clicking on a clue: show the question or answer.
  *
@@ -141,17 +138,22 @@ fillTable();
  * - if currently "answer", ignore click
  * */
 
-function handleClick(evt) {}
+function handleClick(evt) {
+	const el = evt.target;
+	const clueIndex = el.id[0];
+	const catIndex = el.id[2];
 
-/** Wipe the current Jeopardy board, show the loading spinner,
- * and update the button used to fetch data.
- */
-
-function showLoadingView() {}
-
-/** Remove the loading spinner and update the button used to fetch data. */
-
-function hideLoadingView() {}
+	let clue = categories[catIndex].clues[clueIndex];
+	if (clue.showing === null) {
+		$(`#${clueIndex}-${catIndex}`).html(`${clue.question}`);
+		clue.showing = "question";
+	} else if (clue.showing === "question") {
+		$(`#${clueIndex}-${catIndex}`).text(`${clue.answer}`);
+		clue.showing = "answer";
+	} else {
+		return;
+	}
+}
 
 /** Start game:
  *
@@ -160,12 +162,20 @@ function hideLoadingView() {}
  * - create HTML table
  * */
 
-async function setupAndStart() {}
+async function setupAndStart() {
+	let ids = await getCategoryIds();
+	for (let i = 0; i < ids.length; i++) {
+		categories.push(await getCategory(ids[i]));
+	}
+	fillTable();
+}
 
 /** On click of start / restart button, set up game. */
 
 // TODO
+$("button").on("click", setupAndStart);
 
 /** On page load, add event handler for clicking clues */
 
 // TODO
+$("table").on("click", "td", handleClick);
